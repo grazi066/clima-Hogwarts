@@ -251,7 +251,7 @@ function CardAtual({ dados, cidade }) {
         {/* Temperatura */}
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           <div style={{
-            fontSize: 'clamp(4.5rem, 18vw, 7.5rem)', fontWeight: 900,
+            fontSize: 'clamp(4.5rem, 6vw, 7.5rem)', fontWeight: 900,
             color: tempColor, lineHeight: 1,
             textShadow: `0 0 50px ${tempColor}77, 0 0 20px ${tempColor}44`,
             fontFamily: 'Cinzel, serif',
@@ -517,7 +517,7 @@ export default function Home() {
         background: 'radial-gradient(ellipse at top left, #160d2a 0%, #060610 55%)',
         fontFamily: 'Crimson Text, serif', color: '#fff',
       }}>
-        <div style={{ maxWidth: 480, margin: '0 auto', padding: '0 0 48px' }}>
+        <div className="max-w-[480px] md:max-w-3xl lg:max-w-6xl xl:max-w-7xl mx-auto" style={{ padding: '0 0 48px' }}>
 
           {/* ── HEADER ── */}
           <div style={{ padding: '28px 18px 16px', borderBottom: '1px solid #141414', marginBottom: 20 }}>
@@ -567,44 +567,53 @@ export default function Home() {
           </div>
 
           <div style={{ padding: '0 16px' }}>
+            <div className="lg:grid lg:grid-cols-[340px_1fr] lg:gap-8 lg:items-start">
 
-            {/* ── ALERTAS ── */}
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: 10, letterSpacing: 3, color: '#c9a84c', fontFamily: 'Cinzel, serif', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
-                <div style={{ flex: 1, height: 1, background: '#b8860b55' }} />
-                ⚠️ ALERTAS DO MINISTÉRIO
-                <div style={{ flex: 1, height: 1, background: '#b8860b55' }} />
+              {/* ── COLUNA LATERAL: alertas + localização ── */}
+              <div>
+                {/* ── ALERTAS ── */}
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 10, letterSpacing: 3, color: '#c9a84c', fontFamily: 'Cinzel, serif', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700 }}>
+                    <div style={{ flex: 1, height: 1, background: '#b8860b55' }} />
+                    ⚠️ ALERTAS DO MINISTÉRIO
+                    <div style={{ flex: 1, height: 1, background: '#b8860b55' }} />
+                  </div>
+                  {alertas.map((a, i) => <Alerta key={i} alertas={[a]} />)}
+                </div>
+
+                {/* ── SELETOR ── */}
+                <Seletor onSelect={handleSelect} estadoAtual={estadoSel} cidadeAtual={cidadeSel} />
               </div>
-              {alertas.map((a, i) => <Alerta key={i} alertas={[a]} />)}
+
+              {/* ── PAINEL PRINCIPAL ── */}
+              <div>
+                {loading && (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: '#c9a84c' }}>
+                    <div style={{ fontSize: 52, marginBottom: 14, animation: 'pulse 1.5s infinite' }}>🔮</div>
+                    <p style={{ fontFamily: 'Cinzel, serif', fontSize: 13, letterSpacing: 3, color: '#c9a84c' }}>INVOCANDO DADOS...</p>
+                  </div>
+                )}
+
+                {!loading && climaAtual && cidadeSel && (
+                  <div className="fade">
+                    <CardAtual dados={climaAtual} cidade={cidadeSel} />
+                    <div className="xl:grid xl:grid-cols-2 xl:gap-5 xl:items-start">
+                      <Historico historico={historico} />
+                      <Previsao previsao={previsao} />
+                    </div>
+                  </div>
+                )}
+
+                {!loading && !cidadeSel && (
+                  <div style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
+                    <div style={{ fontSize: 60, opacity: 0.12, marginBottom: 16 }}>🏰</div>
+                    <p style={{ fontFamily: 'Cinzel, serif', fontSize: 12, color: '#444', letterSpacing: 2, lineHeight: 2.2 }}>
+                      SELECIONE UMA CIDADE<br />PARA REVELAR O CLIMA
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-
-            {/* ── SELETOR ── */}
-            <Seletor onSelect={handleSelect} estadoAtual={estadoSel} cidadeAtual={cidadeSel} />
-
-            {/* ── CONTEÚDO ── */}
-            {loading && (
-              <div style={{ textAlign: 'center', padding: '3rem', color: '#c9a84c' }}>
-                <div style={{ fontSize: 52, marginBottom: 14, animation: 'pulse 1.5s infinite' }}>🔮</div>
-                <p style={{ fontFamily: 'Cinzel, serif', fontSize: 13, letterSpacing: 3, color: '#c9a84c' }}>INVOCANDO DADOS...</p>
-              </div>
-            )}
-
-            {!loading && climaAtual && cidadeSel && (
-              <div className="fade">
-                <CardAtual dados={climaAtual} cidade={cidadeSel} />
-                <Historico historico={historico} />
-                <Previsao previsao={previsao} />
-              </div>
-            )}
-
-            {!loading && !cidadeSel && (
-              <div style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
-                <div style={{ fontSize: 60, opacity: 0.12, marginBottom: 16 }}>🏰</div>
-                <p style={{ fontFamily: 'Cinzel, serif', fontSize: 12, color: '#444', letterSpacing: 2, lineHeight: 2.2 }}>
-                  SELECIONE UMA CIDADE<br />PARA REVELAR O CLIMA
-                </p>
-              </div>
-            )}
           </div>
 
           <p style={{ textAlign: 'center', marginTop: 32, fontSize: 9, color: '#1e1e1e', fontFamily: 'Cinzel, serif', letterSpacing: 2 }}>
